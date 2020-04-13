@@ -16,7 +16,7 @@ def index():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        return redirect('/success')
+        return redirect('/')
     return render_template('login.html', form=form)
 
 
@@ -24,7 +24,7 @@ def login():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        return redirect('/success')
+        return redirect('/')
     return render_template('register.html', form=form)
 
 
