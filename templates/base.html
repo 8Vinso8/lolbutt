@@ -10,8 +10,8 @@
     <style type="text/css">
         .log {
          position: absolute;
-         top: 10px;
-         right: 10px;
+         top: 7.5px;
+         right: 40px;
          }
          header {
          background : blue;
@@ -24,12 +24,12 @@
     <header>
         <a href="/"><h1>LoLButt</h1></a>
         {% if current_user.is_authenticated %}
-            <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
+            <div class="log"><a class="navbar-brand" href="/logout">{{ current_user.name }}</a></div>
         {% else %}
         <form>
             <div class="log">
-            <input type="button" value="Войти" onClick='location.href="/login"'>
-            <input type="button" value="Зарегистрироваться" onClick='location.href="/register"'>
+                <input type="button" value="Вход" onClick='location.href="/login"'>
+                <input type="button" value="Регистрация" onClick='location.href="/register"'>
             </div>
         </form>
         {% endif %}
