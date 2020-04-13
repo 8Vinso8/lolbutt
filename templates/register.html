@@ -27,6 +27,20 @@
 
         {{ form.password.label }}<br>
         {{ form.password(class="form-control", type="password") }}<br>
+        {% for error in form.password.errors %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endfor %}
+
+        {{ form.confirm.label }}<br>
+        {{ form.confirm(class="form-control", type="password") }}<br>
+        {% for error in form.confirm.errors %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endfor %}
+        {{ form.submit(type="submit", class="btn btn-primary") }}
     </form>
 </body>
 </html>
