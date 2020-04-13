@@ -5,6 +5,7 @@ from register import RegistrationForm
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
+
 @app.route('/')
 @app.route('/index')
 def index():
@@ -25,7 +26,6 @@ def register():
     if form.validate_on_submit():
         return redirect('/success')
     return render_template('register.html', form=form)
-
 
 
 if __name__ == '__main__':
