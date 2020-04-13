@@ -1,7 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
 <div>
-    Призыватель {{ name }} лошара {{ level }}-го уровня и играет на {{ region }} сервере.
+    <h2>
+        Информация о призывателе {{ name }}
+    </h2>
+    <h3>
+        <p>
+            {{ name }} - призыватель {{ level }}-го уровня
+        </p>
+    {% if champions %}
+    <p>
+        Любимые чемпионы:
+        <ul>
+            {% for champion in champions %}
+                <li>{{ champion }}</li>
+            {% endfor %}
+        </ul>
+    </p>
+    {% else %}
+    <p>
+        Любимых чемпионов нет ;-(
+    </p>
+    {% endif %}
+        <p>
+            Последняя игра была на {{ last_champion }}
+        </p>
+    </h3>
 </div>
-
 {% endblock %}

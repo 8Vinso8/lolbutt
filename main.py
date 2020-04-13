@@ -5,6 +5,7 @@ from data import db_session
 from data.users import User
 import cassiopeia as cass
 from flask_login import LoginManager, login_user, login_required, logout_user
+import random
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -78,8 +79,16 @@ def search():
     summoner = cass.get_summoner(name=summoner_name)
     name = summoner.name
     level = summoner.level
-    region = summoner.region
-    return render_template('search.html', name=name, level=level, region=region)
+    good_with = summoner.champion_masteries.filter(lambda cm: cm.level >= 6)
+    last_champion = summoner.match_history[0].participants[summoner].champion
+    return render_template(
+        'search.html',
+        name=name,
+        level=level,
+        champions=[cm.champion.name for cm in good_with],
+        last_champion=last_champion.name
+    )
+
 
 @app.route('/logout')
 @login_required
