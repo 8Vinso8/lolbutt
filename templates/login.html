@@ -2,9 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Вход</title>
 </head>
 <body>
+    {{ form.hidden_tag() }}
 
+    {{ form.username.label }}<br>
+    {{ form.username(class="form-control") }}<br>
+    {% for error in form.username.errors %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+    {% endfor %}
+
+    {{ form.password.label }}<br>
+    {{ form.password(class="form-control", type="password") }}<br>
+    {% for error in form.password.errors %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+    {% endfor %}
+    {{ form.submit(type="submit", class="btn btn-primary") }}
 </body>
 </html>
