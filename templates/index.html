@@ -1,4 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Привет, {{ username }}!</h1>
+<form action="/search/">
+    <input type="text" name="summoner_name">
+    <input type="submit" name="Найти">
+</form>
+
 {% endblock %}
