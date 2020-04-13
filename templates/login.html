@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Вход</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block content %}
 <form novalidate method="post">
     {{ form.hidden_tag() }}
 
@@ -25,5 +20,4 @@
     {% endfor %}
     {{ form.submit(type="submit", class="btn btn-primary") }}
     </form>
-</body>
-</html>
+{% endblock %}
