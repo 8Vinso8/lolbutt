@@ -4,7 +4,7 @@ from register import RegistrationForm
 from data import db_session
 from data.users import User
 import cassiopeia as cass
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user, login_required, logout_user
 
 
 app = Flask(__name__)
@@ -79,6 +79,12 @@ def search(summoner_name):
     print("{name} is a level {level} summoner on the {region} server.".format(name=summoner.name,
                                                                               level=summoner.level,
                                                                               region=summoner.region))
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
 
 
 def main():
