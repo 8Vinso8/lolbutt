@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, redirect
 from login import LoginForm
 from register import RegistrationForm
+from data import db_session
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -28,5 +29,10 @@ def register():
     return render_template('register.html', form=form)
 
 
+def main():
+    db_session.global_init("db/data.sqlite")
+    app.run()
+
+
 if __name__ == '__main__':
-    app.run(port=8080, host='127.0.0.1')
+    main()
