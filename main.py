@@ -6,7 +6,6 @@ from data.users import User
 import cassiopeia as cass
 from flask_login import LoginManager, login_user, login_required, logout_user
 
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
@@ -73,12 +72,14 @@ def register():
     return render_template('register.html', form=form)
 
 
-@app.route('/search/<summoner_name>')
-def search(summoner_name):
+@app.route('/search', methods=['POST', 'GET'])
+def search():
+    summoner_name = request.form.get('summoner_name')
     summoner = cass.get_summoner(name=summoner_name)
-    print("{name} is a level {level} summoner on the {region} server.".format(name=summoner.name,
-                                                                              level=summoner.level,
-                                                                              region=summoner.region))
+    name = summoner.name
+    level = summoner.level
+    region = summoner.region
+    return render_template('search.html', name=name, level=level, region=region)
 
 @app.route('/logout')
 @login_required
@@ -87,10 +88,6 @@ def logout():
     return redirect("/")
 
 
-def main():
+if __name__ == '__main__':
     db_session.global_init("db/data.sqlite")
     app.run(host='127.0.0.1', port='8080', debug=True)
-
-
-if __name__ == '__main__':
-    main()
