@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, redirect
 from login import LoginForm
 from register import RegistrationForm
 from data import db_session
+from data.users import User
 import cassiopeia as cass
 
 
@@ -36,11 +37,26 @@ def login():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        the_username = form.username.data
-        the_email = form.email.data
-        the_password = form.password.data
-        print(the_email, the_username, the_password)
-        return redirect('/')
+        username = form.username.data
+        email = form.email.data
+        password = form.password.data
+        session = db_session.create_session()
+        if session.query(User).filter(User.email == email).first():
+            return render_template('register.html', title='Регистрация',
+                                   form=form,
+                                   message="Адрес почты занят!")
+        if session.query(User).filter(User.name == username).first():
+            return render_template('register.html', title='Регистрация',
+                                   form=form,
+                                   message="Логин занят!")
+        user = User(
+            name=username,
+            email=email,
+        )
+        user.set_password(password)
+        session.add(user)
+        session.commit()
+        return redirect('/login')
     return render_template('register.html', form=form)
 
 
