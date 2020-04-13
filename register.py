@@ -9,4 +9,4 @@ class RegistrationForm(Form):
         validators.EqualTo('confirm', message='Passwords must match')
     ])
     confirm = PasswordField('Repeat Password')
-    submit = SubmitField('Зарегестрироваться')
+    submit = SubmitField('Зарегистрироваться')
