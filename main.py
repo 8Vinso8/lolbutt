@@ -18,9 +18,6 @@ def index():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        the_username = form.username.data
-        the_password = form.password.data
-        print(the_username, the_password)
         return redirect('/')
     return render_template('login.html', form=form)
 
@@ -34,11 +31,11 @@ def register():
         password = form.password.data
         session = db_session.create_session()
         if session.query(User).filter(User.email == email).first():
-            return render_template('register.html', title='Регистрация',
+            return render_template('register.html',
                                    form=form,
                                    message="Адрес почты занят!")
         if session.query(User).filter(User.name == username).first():
-            return render_template('register.html', title='Регистрация',
+            return render_template('register.html',
                                    form=form,
                                    message="Логин занят!")
         user = User(
