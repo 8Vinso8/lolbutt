@@ -99,6 +99,11 @@ def logout():
     return redirect("/")
 
 
+@app.route("/heroes")
+def heroes():
+    return render_template('heroes.html')
+
+
 if __name__ == '__main__':
     db_session.global_init("db/data.sqlite")
     app.run(host='127.0.0.1', port='8080', debug=True)
