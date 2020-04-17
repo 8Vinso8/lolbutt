@@ -16,16 +16,42 @@
          header {
          background : blue;
          }
+         .nav-bar {
+         position: absolute;
+         top: 10px;
+         left: 50%;
+         }
+         .button-link {
+         background-color: red;
+         color: white;
+         padding: 1em 1.5em;
+         text-decoration: none;
+         text-transform: uppercase;
+         }
+         .button-link:hover {
+         background-color: #555;
+         }
+         .button-link:active {
+         background-color: black;
+         }
+         .button-link:visited {
+         background-color: #ccc;
+         }
+
     </style>
     {% block head %}{% endblock %}
     <title>{{title}}</title>
 </head>
 <body>
     <header>
-        <a href="/"><h1>LoLButt</h1></a>
+        <a href="/index"><img src="/static/img/logo.png"></a>
         {% if current_user.is_authenticated %}
             <div class="log"><a class="navbar-brand" href="/logout">{{ current_user.name }}</a></div>
         {% else %}
+        <div class="nav-bar">
+            <a href="/heroes" class="button-link">Герои</a>
+            <a href="/items" class="button-link">Предметы</a>
+        </div>
         <form>
             <div class="log">
                 <input type="button" value="Вход" onClick='location.href="/login"'>

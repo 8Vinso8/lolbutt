@@ -5,13 +5,13 @@ from data import db_session
 from data.users import User
 import cassiopeia as cass
 from flask_login import LoginManager, login_user, login_required, logout_user
-
+import random
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
-cass.set_riot_api_key("RGAPI-d8b0420d-7d54-4e07-9128-1fcfdb74bf51")
+cass.set_riot_api_key("RGAPI-b5e78a02-6f01-4757-9f97-40097d71eafd")
 cass.set_default_region("RU")
 
 
@@ -73,12 +73,24 @@ def register():
     return render_template('register.html', form=form)
 
 
-@app.route('/search/<summoner_name>')
-def search(summoner_name):
+@app.route('/search', methods=['POST', 'GET'])
+def search():
+    summoner_name = request.form.get('summoner_name')
     summoner = cass.get_summoner(name=summoner_name)
-    print("{name} is a level {level} summoner on the {region} server.".format(name=summoner.name,
-                                                                              level=summoner.level,
-                                                                              region=summoner.region))
+    name = summoner.name
+    level = summoner.level
+    good_with = summoner.champion_masteries.filter(lambda cm: cm.level >= 6)
+    last_champion = summoner.match_history[0].participants[summoner].champion
+    profile_icon = summoner.profile_icon.url
+    return render_template(
+        'search.html',
+        name=name,
+        level=level,
+        champions=[cm.champion.name for cm in good_with],
+        last_champion=last_champion.name,
+        profile_icon_url=profile_icon
+    )
+
 
 @app.route('/logout')
 @login_required
@@ -87,10 +99,6 @@ def logout():
     return redirect("/")
 
 
-def main():
+if __name__ == '__main__':
     db_session.global_init("db/data.sqlite")
     app.run(host='127.0.0.1', port='8080', debug=True)
-
-
-if __name__ == '__main__':
-    main()
