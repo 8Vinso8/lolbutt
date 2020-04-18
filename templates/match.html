@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<div>
+    <table border="5">
+        <tr>
+            <td>Чемпион</td>
+            <td>Призыватель</td>
+            <td>K</td>
+            <td>D</td>
+            <td>A</td>
+            <td>ЦЕН</td>
+            <td>ДОБ/НО</td>
+            <td>ЗВМ/ОВМ</td>
+            <td>Урон</td>
+            <td>ЛЕЧ</td>
+            <td>Снос</td>
+            <td>Предметы</td>
+        </tr>
+        {% for participant in red_team_participants %}
+        <tr>
+            <td>{{ participant.champion.name }}</td>
+            <td>{{ participant.summoner.name }}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% endblock %}
