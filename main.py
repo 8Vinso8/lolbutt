@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
-cass.set_riot_api_key("RGAPI-b5e78a02-6f01-4757-9f97-40097d71eafd")
+cass.set_riot_api_key("RGAPI-7156ace1-f7e0-4125-9cf3-26381f800803")
 cass.set_default_region("RU")
 
 
@@ -80,7 +80,8 @@ def search():
     name = summoner.name
     level = summoner.level
     good_with = summoner.champion_masteries.filter(lambda cm: cm.level >= 6)
-    last_champion = summoner.match_history[0].participants[summoner].champion
+    last_match = summoner.match_history[0]
+    last_champion = last_match.participants[summoner].champion
     profile_icon = summoner.profile_icon.url
     return render_template(
         'search.html',
@@ -88,7 +89,21 @@ def search():
         level=level,
         champions=[cm.champion.name for cm in good_with],
         last_champion=last_champion.name,
-        profile_icon_url=profile_icon
+        profile_icon_url=profile_icon,
+        last_match_id=str(last_match.id)
+    )
+
+
+@app.route('/match/<match_id>')
+def get_match(match_id):
+    match = cass.get_match(id=int(match_id))
+    red_team = match.red_team
+    blue_team = match.blue_team
+    print(red_team.participants)
+    return render_template(
+        'match.html',
+        red_team_participants=red_team.participants,
+        blue_team_participants=blue_team.participants
     )
 
 
