@@ -9,8 +9,8 @@
             <td>D</td>
             <td>A</td>
             <td>ЦЕН</td>
-            <td>ДОБ/НО</td>
-            <td>ЗВМ/ОВМ</td>
+            <td>ДОБ</td>
+            <td>ЗВМ</td>
             <td>Урон</td>
             <td>ЛЕЧ</td>
             <td>Снос</td>
@@ -18,17 +18,17 @@
         </tr>
         {% for participant in red_team_participants %}
         <tr>
-            <td>{{ participant.champion.name }}</td>
-            <td>{{ participant.summoner.name }}</td>
+            <td><a href="/heroes/{{ participant.champion.name }}">{{ participant.champion.name }}</a></td>
+            <td><a href="/search/{{ participant.summoner.name }}">{{ participant.summoner.name }}</a></td>
+            <td>{{ participant.stats.kills }}</td>
+            <td>{{ participant.stats.deaths }}</td>
+            <td>{{ participant.stats.assists }}</td>
+            <td>{{ participant.stats.gold_spent }}</td>
+            <td>{{ participant.stats.total_minions_killed }}</td>
             <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>{{ participant.stats.total_damage_dealt }}</td>
+            <td>{{ participant.stats.total_heal }}</td>
+            <td>{{ participant.stats.damage_dealt_to_turrets }}</td>
             <td></td>
         </tr>
         {% endfor %}
