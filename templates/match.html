@@ -29,7 +29,11 @@
             <td>{{ participant.stats.total_damage_dealt }}</td>
             <td>{{ participant.stats.total_heal }}</td>
             <td>{{ participant.stats.damage_dealt_to_turrets }}</td>
-            <td></td>
+            <td>
+                {% for item in participant.stats.items %}
+                <a href="/items/{{ item.name }}"><img src="{{ item.image.url }}" alt=""></a>
+                {% endfor %}
+            </td>
         </tr>
         {% endfor %}
     </table>
