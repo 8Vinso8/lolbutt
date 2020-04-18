@@ -16,6 +16,28 @@
          header {
          background : blue;
          }
+         .nav-bar {
+         position: absolute;
+         top: 10px;
+         left: 50%;
+         }
+         .button-link {
+         background-color: red;
+         color: white;
+         padding: 1em 1.5em;
+         text-decoration: none;
+         text-transform: uppercase;
+         }
+         .button-link:hover {
+         background-color: #555;
+         }
+         .button-link:active {
+         background-color: black;
+         }
+         .button-link:visited {
+         background-color: #ccc;
+         }
+
     </style>
     {% block head %}{% endblock %}
     <title>{{title}}</title>
@@ -26,6 +48,10 @@
         {% if current_user.is_authenticated %}
             <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
         {% else %}
+        <div class="nav-bar">
+            <a href="/heroes" class="button-link">Герои</a>
+            <a href="/items" class="button-link">Предметы</a>
+        </div>
         <form>
             <div class="log">
             <input type="button" value="Войти" onClick='location.href="/login"'>
