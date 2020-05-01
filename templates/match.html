@@ -4,12 +4,11 @@
     .block {
         width:406px;
         height:64px;
-        background:white;
     }
 </style>
 {% endblock %}
 {% block content %}
-<div>
+<div class="container">
     {% for team in [red_team, blue_team] %}
     <div>{{ team['name'] }}
         <table border="2">
