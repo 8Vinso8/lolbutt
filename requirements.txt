@@ -1,0 +1,7 @@
+cassiopeia
+flask
+sqlalchemy
+werkzeug
+wtforms
+flask-wtf
+flask_login
