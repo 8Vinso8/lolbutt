@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect
+from flask import Flask, request, render_template, redirect, url_for
 from login import LoginForm
 from register import RegistrationForm
 from data import db_session
@@ -133,9 +133,10 @@ def hero_search(hero):
     if hero in cass.Champions():
         hero = cass.Champion(name=f"{hero}")
         name = hero.name
+        print(1)
         return render_template(
             'hero.html',
-            name=name,
+            name=name
             )
 
 

@@ -8,9 +8,13 @@
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
           crossorigin="anonymous">
     <style type="text/css">
-         .text {
+         .title {
          position: absolute;
          top: 100px;
+         left: 40%;
+         }
+         .profile {
+         top: 150px;
          left: 40%;
          }
     </style>
@@ -20,7 +24,8 @@
 </head>
 <body>
 
-<div class="text"><h2>Чемпион {{name}}</h2></div>
+<div class="title"><h2>Чемпион {{name}}</h2>
+<img src='/static/img/{{name}}.jpg'></div>
 
     {% block content %}{% endblock %}
     {% block footer %}{% endblock %}
