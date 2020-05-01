@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect
+from flask import Flask, request, render_template, redirect, url_for
 from login import LoginForm
 from register import RegistrationForm
 from data import db_session
@@ -129,10 +129,18 @@ def get_match(match_id):
     match = cass.get_match(id=int(match_id))
     red_team = match.red_team
     blue_team = match.blue_team
+    duration = match.duration
     return render_template(
         'match.html',
-        red_team_participants=red_team.participants,
-        blue_team_participants=blue_team.participants
+        red_team={'name': 'Красная команда', 'participants': red_team.participants},
+        blue_team={'name': 'Синяя команда', 'participants': blue_team.participants},
+        match_duration=duration,
+        str=str,
+        round=round,
+        sorted=sorted,
+        filter=filter,
+        sort_key=lambda item: item.name,
+        filter_key=lambda item: item is not None
     )
 
 
@@ -141,6 +149,27 @@ def get_match(match_id):
 def logout():
     logout_user()
     return redirect("/")
+
+
+@app.route("/heroes", methods=['GET', 'POST'])
+def heroes():
+    if request.method == 'GET':
+        return render_template('heroes.html')
+    elif request.method == 'POST':
+        hero = request.form.get('hero')
+        return redirect(f'/heroes/{hero}')
+
+
+@app.route("/heroes/<hero>")
+def hero_search(hero):
+    if hero in cass.Champions():
+        hero = cass.Champion(name=f"{hero}")
+        name = hero.name
+        print(1)
+        return render_template(
+            'hero.html',
+            name=name
+            )
 
 
 @app.route('/activation/<token>')
@@ -166,4 +195,4 @@ def activate(token):
 
 if __name__ == '__main__':
     db_session.global_init("db/data.sqlite")
-    app.run(host='127.0.0.1', port='8080', debug=True)
+    app.run(host='127.0.0.1', port='8080')
