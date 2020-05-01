@@ -3,15 +3,19 @@ from login import LoginForm
 from register import RegistrationForm
 from data import db_session
 from data.users import User
+from data.confirm_users import ConfirmUser
 import cassiopeia as cass
 from flask_login import LoginManager, login_user, login_required, logout_user
-import random
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
+from uuid import uuid4
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
-cass.set_riot_api_key("RGAPI-5700a2af-df27-4772-a7ca-bb599c6ccddf")
+cass.set_riot_api_key("RGAPI-4ebb526b-2f70-46c7-8212-a490b83645fe")
 cass.set_default_region("RU")
 
 
@@ -26,7 +30,7 @@ def base():
     return render_template('base.html')
 
 
-@app.route('/index' , methods=['POST', 'GET'])
+@app.route('/index', methods=['POST', 'GET'])
 def index():
     if request.method == 'GET':
         return render_template('index.html')
@@ -58,23 +62,43 @@ def register():
         email = form.email.data
         password = form.password.data
         session = db_session.create_session()
-        if session.query(User).filter(User.email == email).first():
+        if session.query(User).filter(User.email == email).first() or \
+           session.query(ConfirmUser).filter(ConfirmUser.email == email).first():
             return render_template('register.html',
                                    form=form,
                                    message="Адрес почты занят!")
-        if session.query(User).filter(User.name == username).first():
+        if session.query(User).filter(User.name == username).first() or \
+           session.query(User).filter(User.name == username).first():
             return render_template('register.html',
-                                   form=form,
-                                   message="Логин занят!")
-        user = User(
-            name=username,
-            email=email,
-        )
+                                    form=form,
+                                    message="Логин занят!")
+        token = str(uuid4())
+        user = ConfirmUser(name=username, email=email, token=token)
         user.set_password(password)
         session.add(user)
         session.commit()
+        session.close()
+
+        email_text = f'http://127.0.0.1:8080/activation/{token}'
+        send_email(email, email_text)
+
         return redirect('/login')
     return render_template('register.html', form=form)
+
+
+def send_email(email, text):
+    msg = MIMEMultipart()
+    message = text
+    password = "MAXTHEPIK_loh123"
+    msg['From'] = "lolbutt.noreply@gmail.com"
+    msg['To'] = email
+    msg['Subject'] = "Подтверждение почты"
+    msg.attach(MIMEText(message, 'plain'))
+    server = smtplib.SMTP('smtp.gmail.com: 587')
+    server.starttls()
+    server.login(msg['From'], password)
+    server.sendmail(msg['From'], msg['To'], msg.as_string())
+    server.quit()
 
 
 @app.route('/search/<summoner_name>')
@@ -117,6 +141,27 @@ def get_match(match_id):
 def logout():
     logout_user()
     return redirect("/")
+
+
+@app.route('/activation/<token>')
+def activate(token):
+    session = db_session.create_session()
+    confirm_user = session.query(ConfirmUser).filter(ConfirmUser.token == token).first()
+    if not confirm_user:
+        return 'ошибка 404'
+    username = confirm_user.name
+    email = confirm_user.email
+    password = confirm_user.hashed_password
+    user = User(
+        name=username,
+        email=email,
+        hashed_password=password
+    )
+    session.add(user)
+    session.delete(confirm_user)
+    session.commit()
+    session.close()
+    return redirect('/login')
 
 
 if __name__ == '__main__':
