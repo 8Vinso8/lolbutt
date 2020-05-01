@@ -8,7 +8,7 @@
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
           crossorigin="anonymous">
     <style type="text/css">
-         .nav-bar {
+         .text {
          position: absolute;
          top: 100px;
          left: 40%;
@@ -19,10 +19,8 @@
 
 </head>
 <body>
-<form method="post">
-   <div class="nav-bar"><p><input type="text" placeholder="Поиск по сайту" required name="hero">
-   <input type="submit" value="Найти"></p></div>
-</form>
+
+<div class="text"><h2>Чемпион {{name}}</h2></div>
 
     {% block content %}{% endblock %}
     {% block footer %}{% endblock %}

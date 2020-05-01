@@ -26,7 +26,7 @@ def base():
     return render_template('base.html')
 
 
-@app.route('/index' , methods=['POST', 'GET'])
+@app.route('/index', methods=['POST', 'GET'])
 def index():
     if request.method == 'GET':
         return render_template('index.html')
@@ -119,9 +119,24 @@ def logout():
     return redirect("/")
 
 
-@app.route("/heroes")
+@app.route("/heroes", methods=['GET', 'POST'])
 def heroes():
-    return render_template('heroes.html')
+    if request.method == 'GET':
+        return render_template('heroes.html')
+    elif request.method == 'POST':
+        hero = request.form.get('hero')
+        return redirect(f'/heroes/{hero}')
+
+
+@app.route("/heroes/<hero>")
+def hero_search(hero):
+    if hero in cass.Champions():
+        hero = cass.Champion(name=f"{hero}")
+        name = hero.name
+        return render_template(
+            'hero.html',
+            name=name,
+            )
 
 
 if __name__ == '__main__':
