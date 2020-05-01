@@ -4,3 +4,4 @@ sqlalchemy
 werkzeug
 wtforms
 flask-wtf
+flask_login
