@@ -1,0 +1,5 @@
+cassiopeia
+flask
+sqlalchemy
+werkzeug
+wtforms

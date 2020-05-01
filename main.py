@@ -195,4 +195,4 @@ def activate(token):
 
 if __name__ == '__main__':
     db_session.global_init("db/data.sqlite")
-    app.run(host='127.0.0.1', port='8080')
+    app.run()
