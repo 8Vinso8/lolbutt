@@ -80,7 +80,7 @@ def register():
         session.commit()
         session.close()
 
-        email_text = f'http://127.0.0.1:8080/activation/{token}'
+        email_text = f'http://lolbutt.herokuapp.com/activation/{token}'
         send_email(email, email_text)
 
         return redirect('/login')
@@ -202,4 +202,4 @@ def activate(token):
 if __name__ == '__main__':
     db_session.global_init("db/data.sqlite")
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='localhost', port=port)
