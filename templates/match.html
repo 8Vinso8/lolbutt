@@ -1,42 +1,61 @@
 {% extends "base.html" %}
+{% block head %}
+<style type="text/css">
+    .block {
+        width:406px;
+        height:64px;
+        background:white;
+    }
+</style>
+{% endblock %}
 {% block content %}
 <div>
-    <table border="5">
-        <tr>
-            <td>Чемпион</td>
-            <td>Призыватель</td>
-            <td>K</td>
-            <td>D</td>
-            <td>A</td>
-            <td>ЦЕН</td>
-            <td>ДОБ</td>
-            <td>ЗВМ</td>
-            <td>Урон</td>
-            <td>ЛЕЧ</td>
-            <td>Снос</td>
-            <td>Предметы</td>
-        </tr>
-        {% for participant in red_team_participants %}
-        <tr>
-            <td><a href="/heroes/{{ participant.champion.name }}">{{ participant.champion.name }}</a></td>
-            <td><a href="/search/{{ participant.summoner.name }}">{{ participant.summoner.name }}</a></td>
-            <td>{{ participant.stats.kills }}</td>
-            <td>{{ participant.stats.deaths }}</td>
-            <td>{{ participant.stats.assists }}</td>
-            <td>{{ participant.stats.gold_spent }}</td>
-            <td>{{ participant.stats.total_minions_killed }}</td>
-            <td></td>
-            <td>{{ participant.stats.total_damage_dealt }}</td>
-            <td>{{ participant.stats.total_heal }}</td>
-            <td>{{ participant.stats.damage_dealt_to_turrets }}</td>
-            <td>
-                {% for item in participant.stats.items %}
-                <a href="/items/{{ item.name }}"><img src="{{ item.image.url }}" alt=""></a>
-                {% endfor %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+    {% for team in [red_team, blue_team] %}
+    <div>{{ team['name'] }}
+        <table border="2">
+            <tr>
+                <td>Чемпион</td>
+                <td>Призыватель</td>
+                <td>K</td>
+                <td>D</td>
+                <td>A</td>
+                <td>ЦЕН</td>
+                <td>ДОБ</td>
+                <td>ЗВМ</td>
+                <td>Урон</td>
+                <td>ЛЕЧ</td>
+                <td>Снос</td>
+                <td>Предметы</td>
+                <td>Аксессуар</td>
+            </tr>
+            {% for participant in team['participants'] %}
+            <tr>
+                <td><a href="/heroes/{{ participant.champion.name }}">{{ participant.champion.name }}</a></td>
+                <td><a href="/search/{{ participant.summoner.name }}">{{ participant.summoner.name }}</a></td>
+                <td>{{ participant.stats.kills }}</td>
+                <td>{{ participant.stats.deaths }}</td>
+                <td>{{ participant.stats.assists }}</td>
+                <td>{{ str(round(participant.stats.gold_spent / 1000, 1)) + 'k' }}</td>
+                <td>{{ participant.stats.total_minions_killed }}</td>
+                <td>{{ participant.stats.gold_spent // match_duration.seconds * 60 }}</td>
+                <td>{{ str(round(participant.stats.total_damage_dealt / 1000, 1)) + 'k' }}</td>
+                <td>{{ str(round(participant.stats.total_heal / 1000, 1)) + 'k' }}</td>
+                <td>{{ str(round(participant.stats.damage_dealt_to_turrets / 1000, 1)) + 'k' }}</td>
+                <td>
+                    <div class="block">
+                    {% for item in sorted(filter(filter_key, participant.stats.items[:-1]), key=sort_key) %}
+                    {% if item %}
+                        <a href="/items/{{ item.name }}"><img src="{{ item.image.url }}" alt=""></a>
+                    {% endif %}
+                    {% endfor %}
+                    </div>
+                </td>
+                <td><a href="/items/{{ participant.stats.items[-1].name }}"><img src="{{ participant.stats.items[-1].image.url }}" alt=""></a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endfor %}
 </div>
 
 {% endblock %}

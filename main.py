@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
-cass.set_riot_api_key("RGAPI-5700a2af-df27-4772-a7ca-bb599c6ccddf")
+cass.set_riot_api_key("RGAPI-4ebb526b-2f70-46c7-8212-a490b83645fe")
 cass.set_default_region("RU")
 
 
@@ -26,7 +26,7 @@ def base():
     return render_template('base.html')
 
 
-@app.route('/index' , methods=['POST', 'GET'])
+@app.route('/index', methods=['POST', 'GET'])
 def index():
     if request.method == 'GET':
         return render_template('index.html')
@@ -105,10 +105,18 @@ def get_match(match_id):
     match = cass.get_match(id=int(match_id))
     red_team = match.red_team
     blue_team = match.blue_team
+    duration = match.duration
     return render_template(
         'match.html',
-        red_team_participants=red_team.participants,
-        blue_team_participants=blue_team.participants
+        red_team={'name': 'Красная команда', 'participants': red_team.participants},
+        blue_team={'name': 'Синяя команда', 'participants': blue_team.participants},
+        match_duration=duration,
+        str=str,
+        round=round,
+        sorted=sorted,
+        filter=filter,
+        sort_key=lambda item: item.name,
+        filter_key=lambda item: item is not None
     )
 
 
@@ -121,4 +129,4 @@ def logout():
 
 if __name__ == '__main__':
     db_session.global_init("db/data.sqlite")
-    app.run(host='127.0.0.1', port='8080', debug=True)
+    app.run(host='127.0.0.1', port='8080')
