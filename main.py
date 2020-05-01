@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
-cass.set_riot_api_key("RGAPI-b5e78a02-6f01-4757-9f97-40097d71eafd")
+cass.set_riot_api_key("RGAPI-5700a2af-df27-4772-a7ca-bb599c6ccddf")
 cass.set_default_region("RU")
 
 
@@ -26,9 +26,13 @@ def base():
     return render_template('base.html')
 
 
-@app.route('/index')
+@app.route('/index' , methods=['POST', 'GET'])
 def index():
-    return render_template('index.html')
+    if request.method == 'GET':
+        return render_template('index.html')
+    elif request.method == 'POST':
+        summoner_name = request.form.get('summoner_name')
+        return redirect(f'/search/{summoner_name}')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -73,22 +77,38 @@ def register():
     return render_template('register.html', form=form)
 
 
-@app.route('/search', methods=['POST', 'GET'])
-def search():
-    summoner_name = request.form.get('summoner_name')
-    summoner = cass.get_summoner(name=summoner_name)
-    name = summoner.name
-    level = summoner.level
-    good_with = summoner.champion_masteries.filter(lambda cm: cm.level >= 6)
-    last_champion = summoner.match_history[0].participants[summoner].champion
-    profile_icon = summoner.profile_icon.url
+@app.route('/search/<summoner_name>')
+def search(summoner_name):
+    try:
+        summoner = cass.get_summoner(name=summoner_name)
+        name = summoner.name
+        level = summoner.level
+        good_with = summoner.champion_masteries.filter(lambda cm: cm.level >= 6)
+        last_match = summoner.match_history[0]
+        last_champion = last_match.participants[summoner].champion
+        profile_icon = summoner.profile_icon.url
+        return render_template(
+            'search.html',
+            name=name,
+            level=level,
+            champions=[cm.champion.name for cm in good_with],
+            last_champion=last_champion.name,
+            profile_icon_url=profile_icon,
+            last_match_id=str(last_match.id)
+        )
+    except:
+         return redirect('/index')
+
+
+@app.route('/match/<match_id>')
+def get_match(match_id):
+    match = cass.get_match(id=int(match_id))
+    red_team = match.red_team
+    blue_team = match.blue_team
     return render_template(
-        'search.html',
-        name=name,
-        level=level,
-        champions=[cm.champion.name for cm in good_with],
-        last_champion=last_champion.name,
-        profile_icon_url=profile_icon
+        'match.html',
+        red_team_participants=red_team.participants,
+        blue_team_participants=blue_team.participants
     )
 
 

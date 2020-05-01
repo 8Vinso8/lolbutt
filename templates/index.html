@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-<form action="{{ url_for('search') }}" method="post">
-    <input type="text" name="summoner_name">
+<form method="post">
+    <input type="text" required name="summoner_name" >
     <input type="submit">
 </form>
-
 {% endblock %}
