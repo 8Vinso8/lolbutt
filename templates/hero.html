@@ -1,9 +1,10 @@
 {% extends "base.html" %}
-{% block head %}
+{% block content %}
 
-<body>
+<div class="text1">
 <div class="title"><h2>Чемпион {{name}}</h2>
-<img src='/static/img/{{name}}.jpg'></div>
-</body>
+<img src={{img}}>
+<h3>Винрейт {{win_rates}}%</h3>
+<h3>Банрейт {{ban_rates}}%</h3></div></div>
 
 {% endblock %}

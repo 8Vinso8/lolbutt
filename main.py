@@ -107,7 +107,7 @@ def search(summoner_name):
         summoner = cass.get_summoner(name=summoner_name)
         name = summoner.name
         level = summoner.level
-        good_with = summoner.champion_masteries.filter(lambda cm: cm.level >= 6)
+        good_with = summoner.champion_masteries.filter(lambda cm: cm.level > 6)
         last_match = summoner.match_history[0]
         last_champion = last_match.participants[summoner].champion
         profile_icon = summoner.profile_icon.url
@@ -157,18 +157,23 @@ def heroes():
         return render_template('heroes.html')
     elif request.method == 'POST':
         hero = request.form.get('hero')
-        return redirect(f'/heroes/{hero}')
+        return redirect(f'/{hero}')
 
 
-@app.route("/heroes/<hero>")
+@app.route("/<hero>")
 def hero_search(hero):
     if hero in cass.Champions():
-        hero = cass.Champion(name=f"{hero}")
+        hero = cass.get_champion(hero)
         name = hero.name
-        print(1)
+        img = hero.image.url
+        win_rates = round(hero.win_rates['MIDDLE'] * 100, 2)
+        ban_rates = round(hero.ban_rates["MIDDLE"] * 100, 2)
         return render_template(
             'hero.html',
-            name=name
+            name=name,
+            img=img,
+            win_rates=win_rates,
+            ban_rates=ban_rates
             )
 
 
