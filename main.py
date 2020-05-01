@@ -83,7 +83,7 @@ def search(summoner_name):
         summoner = cass.get_summoner(name=summoner_name)
         name = summoner.name
         level = summoner.level
-        good_with = summoner.champion_masteries.filter(lambda cm: cm.level >= 6)
+        good_with = summoner.champion_masteries.filter(lambda cm: cm.level > 6)
         last_match = summoner.match_history[0]
         last_champion = last_match.participants[summoner].champion
         profile_icon = summoner.profile_icon.url
