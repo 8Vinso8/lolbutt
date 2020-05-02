@@ -47,7 +47,7 @@ def index():
         except:
             return render_template(
                 "index.html",
-                message="Неправильное имя героя!",
+                message="Неправильное имя призывателя!",
                 title=title
             )
 
@@ -243,7 +243,7 @@ def heroes():
         except NameError:
             return render_template(
                 'heroes.html',
-                right_name=False
+                message='Неправильное имя чемпиона!'
             )
 
 
@@ -296,6 +296,6 @@ def activate(token):
 
 if __name__ == '__main__':
     db_session.global_init("db/data.sqlite")
-    # app.run(host='localhost', port=8080) # ДЛЯ ДУРАЧКОВ РАЗРАБОВ
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)  # СЕРВЕР
+    app.run(host='localhost', port=8080) # ДЛЯ ДУРАЧКОВ РАЗРАБОВ
+    #port = int(os.environ.get("PORT", 5000))
+    #app.run(host='0.0.0.0', port=port)  # СЕРВЕР
