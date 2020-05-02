@@ -64,7 +64,7 @@
                 {% for participant in team['participants'] %}
                 <tr>
                     <td><a href="/heroes/{{ participant.champion.name }}"><img class="champ_icon" src="{{ participant.champion.image.url }}" height="75" width="75" alt=""></a></td>
-                    <td><a href="/search/{{ participant.summoner.name }}">{{ participant.summoner.name }}</a></td>
+                    <td><a href="/summoner/{{ participant.summoner.name }}">{{ participant.summoner.name }}</a></td>
                     <td>{{ participant.stats.kills }}</td>
                     <td>{{ participant.stats.deaths }}</td>
                     <td>{{ participant.stats.assists }}</td>

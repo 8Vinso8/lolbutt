@@ -30,7 +30,7 @@ def load_user(user_id):
     return session.query(User).get(user_id)
 
 
-@app.route('/')
+@app.route('/', methods=['POST', 'GET'])
 @app.route('/index', methods=['POST', 'GET'])
 def index():
     if request.method == 'GET':
@@ -43,7 +43,7 @@ def index():
         summoner = cass.get_summoner(name=summoner_name)
         try:
             if summoner.match_history[0].participants[summoner]:
-                return redirect(f'/search/{summoner_name}')
+                return redirect(f'/summoner/{summoner_name}')
         except:
             return render_template(
                 "index.html",
@@ -211,9 +211,10 @@ def heroes():
         )
     elif request.method == 'POST':
         hero = request.form.get('hero')
+        hero = hero[0].upper() + hero[1:].lower()
         try:
             if hero in cass.Champions():
-                return redirect(f'/heroes/{hero[0].upper() + hero[1:].lower()}')
+                return redirect(f'/heroes/{hero}')
             else:
                 raise NameError("Неверное имя чемпиона")
         except NameError:

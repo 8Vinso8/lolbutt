@@ -28,22 +28,7 @@
     <h1>
        {{ name }} <img class="profile" src={{ profile_icon_url }} alt="No image" height="70" width="70">
     </h1>
-    <h3>
-    {% if champions %}
-    <p>
-        Чемпионы седьмого ранга:
-        <ul>
-            {% for champion in champions %}
-                <li>{{ champion }}</li>
-            {% endfor %}
-        </ul>
-    </p>
-    {% else %}
-    <p>
-        Нет чемпионов седьмого ранга
-    </p>
-    {% endif %}
-    </h3>
+    <h3>Последние матчи:</h3>
 
     <table class="table table-striped">
         <thead>
