@@ -69,20 +69,23 @@
 <body>
     <header>
         <a href="/"><img src="/static/img/logo.png"></a>
-        {% if current_user.is_authenticated %}
-            <div class="log"><a class="navbar-brand" href="/logout">{{ current_user.name }}</a></div>
-        {% else %}
         <div class="nav-bar">
             <a href="/" class="button-link">Призыватели</a>
             <a href="/heroes" class="button-link">Чемпионы</a>
             <a href="/matches" class="button-link">Матчи</a>
         </div>
-        <form>
+        {% if current_user.is_authenticated %}
             <div class="log">
-                <input type="button" value="Вход" onClick='location.href="/login"'>
-                <input type="button" value="Регистрация" onClick='location.href="/register"'>
+                <a class="navbar-brand" href="/summoner/{{current_user.name}}">{{ current_user.name }}</a>
+                <a class="navbar-brand" href="/logout">Выйти</a>
             </div>
-        </form>
+        {% else %}
+            <form>
+                <div class="log">
+                    <input type="button" value="Вход" onClick='location.href="/login"'>
+                    <input type="button" value="Регистрация" onClick='location.href="/register"'>
+                </div>
+            </form>
         {% endif %}
     </header>
     {% block content %}{% endblock %}
