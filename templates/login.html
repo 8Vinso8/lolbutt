@@ -21,6 +21,7 @@
     {% endfor %}
     <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
     {{ form.submit(type="submit", class="btn btn-primary") }}
+    {{message}}
     </form>
 </div>
 {% endblock %}
