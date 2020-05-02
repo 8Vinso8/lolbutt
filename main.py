@@ -16,7 +16,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
-cass.set_riot_api_key("RGAPI-4ebb526b-2f70-46c7-8212-a490b83645fe")
+cass.set_riot_api_key("RGAPI-d76528d3-ee36-4a58-82fa-538c403f7a75")  # Если не ищет игрока, то обновить ключ
 cass.set_default_region("RU")
 
 
@@ -78,11 +78,16 @@ def register():
         user.set_password(password)
         session.add(user)
         session.commit()
-        session.close()
 
         email_text = f'http://lolbutt.herokuapp.com/activation/{token}'
-        send_email(email, email_text)
-
+        try:
+            send_email(email, email_text)
+        except Exception:
+            session.delete(user)
+            session.commit()
+            session.close()
+            return redirect('/register')
+        session.close()
         return redirect('/login')
     return render_template('register.html', form=form)
 
@@ -100,6 +105,7 @@ def send_email(email, text):
     server.login(msg['From'], password)
     server.sendmail(msg['From'], msg['To'], msg.as_string())
     server.quit()
+    return 200
 
 
 @app.route('/search/<summoner_name>')
@@ -121,7 +127,7 @@ def search(summoner_name):
             profile_icon_url=profile_icon,
             last_match_id=str(last_match.id)
         )
-    except:
+    except Exception:
          return redirect('/index')
 
 
@@ -176,6 +182,7 @@ def hero_search(hero):
             win_rates=win_rates,
             ban_rates=ban_rates
             )
+    return '404 ERROR'
 
 
 @app.route('/activation/<token>')
@@ -195,11 +202,11 @@ def activate(token):
     session.add(user)
     session.delete(confirm_user)
     session.commit()
-    session.close()
     return redirect('/login')
 
 
 if __name__ == '__main__':
     db_session.global_init("db/data.sqlite")
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port)  # Для сервера
+    # app.run()  # Для локального теста
