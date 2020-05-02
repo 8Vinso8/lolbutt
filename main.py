@@ -122,12 +122,12 @@ def send_email(email, text):
     server.quit()
 
 
-@app.route('/search/<summoner_name>')
+@app.route('/summoner/<summoner_name>')
 def search(summoner_name):
     summoner = cass.get_summoner(name=summoner_name)
     good_with = summoner.champion_masteries.filter(lambda cm: cm.level > 6)
     return render_template(
-        'search.html',
+        'summoner.html',
         summoner=summoner,
         name=summoner.name,
         level=summoner.level,
@@ -257,6 +257,4 @@ def activate(token):
 
 if __name__ == '__main__':
     db_session.global_init("db/data.sqlite")
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)  # Для сервера
-    # app.run()  # Для локального теста
+    app.run(host='localhost', port=8080)
