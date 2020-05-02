@@ -23,6 +23,11 @@
          <input type="submit" value="Найти">
       </p>
       </div>
+       {% if not right_name%}
+       <div class="alert alert-danger" role="alert">
+         Вы написали неверное имя чемпиона.
+       </div>
+       {% endif %}
    </form>
 </div>
 {% endblock %}

@@ -6,5 +6,10 @@
     <input type="text" required name="summoner_name">
     <input type="submit">
 </form>
+    {% if not right_name%}
+<div class="alert alert-danger" role="alert">
+  Такого призывателя не существует
+</div>
+{% endif %}
 </div>
 {% endblock %}

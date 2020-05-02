@@ -20,6 +20,10 @@ cass.set_riot_api_key("RGAPI-fa29e3ff-89fe-40fa-bb6e-61d8d4462604")
 cass.set_default_region("RU")
 
 
+class NameError(Exception):
+    pass
+
+
 @login_manager.user_loader
 def load_user(user_id):
     session = db_session.create_session()
@@ -34,10 +38,21 @@ def base():
 @app.route('/index', methods=['POST', 'GET'])
 def index():
     if request.method == 'GET':
-        return render_template('index.html')
+        return render_template(
+            'index.html',
+            right_name=True
+        )
     elif request.method == 'POST':
         summoner_name = request.form.get('summoner_name')
-        return redirect(f'/search/{summoner_name}')
+        summoner = cass.get_summoner(name=summoner_name)
+        try:
+            if summoner.match_history[0].participants[summoner]:
+                return redirect(f'/search/{summoner_name}')
+        except:
+            return render_template(
+                "index.html",
+                right_name=False
+            )
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -180,15 +195,26 @@ def logout():
 @app.route("/heroes", methods=['GET', 'POST'])
 def heroes():
     if request.method == 'GET':
-        return render_template('heroes.html')
+        return render_template(
+            'heroes.html',
+            right_name=True
+        )
     elif request.method == 'POST':
         hero = request.form.get('hero')
-        return redirect(f'/{hero}')
+        try:
+            if hero in cass.Champions():
+                return redirect(f'/heroes/{hero}')
+            else:
+                raise NameError("Неверное имя чемпиона")
+        except NameError:
+            return render_template(
+                'heroes.html',
+                right_name=False
+            )
 
 
-@app.route("/<hero>")
+@app.route("/heroes/<hero>")
 def hero_search(hero):
-    if hero in cass.Champions():
         hero = cass.get_champion(hero)
         name = hero.name
         img = hero.image.url
@@ -201,7 +227,6 @@ def hero_search(hero):
             win_rates=win_rates,
             ban_rates=ban_rates
         )
-
 
 @app.route('/activation/<token>')
 def activate(token):
