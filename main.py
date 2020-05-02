@@ -222,9 +222,10 @@ def heroes():
         )
     elif request.method == 'POST':
         hero = request.form.get('hero')
+        hero = hero[0].upper() + hero[1:].lower()
         try:
             if hero in cass.Champions():
-                return redirect(f'/heroes/{hero[0].upper() + hero[1:].lower()}')
+                return redirect(f'/heroes/{hero}')
             else:
                 raise NameError("Неверное имя чемпиона")
         except NameError:

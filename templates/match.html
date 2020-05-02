@@ -78,12 +78,12 @@
                         <div class="block">
                         {% for item in sorted(filter(filter_key, participant.stats.items[:-1]), key=sort_key) %}
                         {% if item %}
-                            <a href="/items/{{ item.name }}"><img src="{{ item.image.url }}" height="59" width="59" alt=""></a>
+                            <img src="{{ item.image.url }}" height="59" width="59" alt="">
                         {% endif %}
                         {% endfor %}
                         </div>
                     </td>
-                    <td><a href="/items/{{ participant.stats.items[-1].name }}"><img src="{{ participant.stats.items[-1].image.url }}" height="75" width="75" alt=""></a></td>
+                    <td><img src="{{ participant.stats.items[-1].image.url }}" height="75" width="75" alt=""></td>
                 </tr>
                 {% endfor %}
                 <tr>
