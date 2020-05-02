@@ -4,54 +4,103 @@
     .block {
         width:406px;
         height:64px;
+        background:white;
     }
+    .match {
+         top: 100px;
+         left: 15%;
+         width: 1275px;
+         background: rgb(149, 215, 234, 0.9);
+         margin: auto;
+    }
+    .champ_icon {
+        border-radius: 70px;
+    }
+    .blue_team {
+        color: blue;
+    }
+
+    .red_team {
+        color: red;
+    }
+
 </style>
 {% endblock %}
 {% block content %}
-<div class="container">
+<div class="match">
+    <div>
+    {% if blue_team.win %}
+    <h1 align="center" class="blue_team">Победа синей команды</h1>
+    {% else %}
+    <h1 align="center" class="red_team">Победа красной команды</h1>
+    {% endif %}
+    </div>
     {% for team in [red_team, blue_team] %}
-    <div>{{ team['name'] }}
-        <table border="2">
-            <tr>
-                <td>Чемпион</td>
-                <td>Призыватель</td>
-                <td>K</td>
-                <td>D</td>
-                <td>A</td>
-                <td>ЦЕН</td>
-                <td>ДОБ</td>
-                <td>ЗВМ</td>
-                <td>Урон</td>
-                <td>ЛЕЧ</td>
-                <td>Снос</td>
-                <td>Предметы</td>
-                <td>Аксессуар</td>
-            </tr>
-            {% for participant in team['participants'] %}
-            <tr>
-                <td><a href="/heroes/{{ participant.champion.name }}">{{ participant.champion.name }}</a></td>
-                <td><a href="/search/{{ participant.summoner.name }}">{{ participant.summoner.name }}</a></td>
-                <td>{{ participant.stats.kills }}</td>
-                <td>{{ participant.stats.deaths }}</td>
-                <td>{{ participant.stats.assists }}</td>
-                <td>{{ str(round(participant.stats.gold_spent / 1000, 1)) + 'k' }}</td>
-                <td>{{ participant.stats.total_minions_killed }}</td>
-                <td>{{ participant.stats.gold_spent // match_duration.seconds * 60 }}</td>
-                <td>{{ str(round(participant.stats.total_damage_dealt / 1000, 1)) + 'k' }}</td>
-                <td>{{ str(round(participant.stats.total_heal / 1000, 1)) + 'k' }}</td>
-                <td>{{ str(round(participant.stats.damage_dealt_to_turrets / 1000, 1)) + 'k' }}</td>
-                <td>
-                    <div class="block">
-                    {% for item in sorted(filter(filter_key, participant.stats.items[:-1]), key=sort_key) %}
-                    {% if item %}
-                        <a href="/items/{{ item.name }}"><img src="{{ item.image.url }}" alt=""></a>
-                    {% endif %}
-                    {% endfor %}
-                    </div>
-                </td>
-                <td><a href="/items/{{ participant.stats.items[-1].name }}"><img src="{{ participant.stats.items[-1].image.url }}" alt=""></a></td>
-            </tr>
-            {% endfor %}
+    <div>
+        {% if team == blue_team %}
+        <h3 class="blue_team">Синяя команда</h3>
+        {% else %}
+        <h3 class="red_team">Красная команда</h3>
+        {% endif %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Чемпион</th>
+                    <th scope="col">Призыватель</th>
+                    <th scope="col">K</th>
+                    <th scope="col">D</th>
+                    <th scope="col">A</th>
+                    <th scope="col">ЦЕН</th>
+                    <th scope="col">ДОБ</th>
+                    <th scope="col">ЗВМ</th>
+                    <th scope="col">Урон</th>
+                    <th scope="col">ЛЕЧ</th>
+                    <th scope="col">Снос</th>
+                    <th scope="col">Предметы</th>
+                    <th scope="col">Аксессуар</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for participant in team['participants'] %}
+                <tr>
+                    <td><a href="/heroes/{{ participant.champion.name }}"><img class="champ_icon" src="{{ participant.champion.image.url }}" height="75" width="75" alt=""></a></td>
+                    <td><a href="/search/{{ participant.summoner.name }}">{{ participant.summoner.name }}</a></td>
+                    <td>{{ participant.stats.kills }}</td>
+                    <td>{{ participant.stats.deaths }}</td>
+                    <td>{{ participant.stats.assists }}</td>
+                    <td>{{ str(round(participant.stats.gold_spent / 1000, 1)) + 'k' }}</td>
+                    <td>{{ participant.stats.total_minions_killed }}</td>
+                    <td>{{ participant.stats.gold_spent // match_duration.seconds * 60 }}</td>
+                    <td>{{ str(round(participant.stats.total_damage_dealt / 1000, 1)) + 'k' }}</td>
+                    <td>{{ str(round(participant.stats.total_heal / 1000, 1)) + 'k' }}</td>
+                    <td>{{ str(round(participant.stats.damage_dealt_to_turrets / 1000, 1)) + 'k' }}</td>
+                    <td>
+                        <div class="block">
+                        {% for item in sorted(filter(filter_key, participant.stats.items[:-1]), key=sort_key) %}
+                        {% if item %}
+                            <a href="/items/{{ item.name }}"><img src="{{ item.image.url }}" height="59" width="59" alt=""></a>
+                        {% endif %}
+                        {% endfor %}
+                        </div>
+                    </td>
+                    <td><a href="/items/{{ participant.stats.items[-1].name }}"><img src="{{ participant.stats.items[-1].image.url }}" height="75" width="75" alt=""></a></td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>{{ team['stats'][0] }}</td>
+                    <td>{{ team['stats'][1] }}</td>
+                    <td>{{ team['stats'][2] }}</td>
+                    <td>{{ str(round(team['stats'][3] / 1000, 1)) + 'k' }}</td>
+                    <td>{{ team['stats'][4] }}</td>
+                    <td>{{ team['stats'][5] // match_duration.seconds * 60 }}</td>
+                    <td>{{ str(round(team['stats'][6] / 1000, 1)) + 'k' }}</td>
+                    <td>{{ str(round(team['stats'][7] / 1000, 1)) + 'k' }}</td>
+                    <td>{{ str(round(team['stats'][8] / 1000, 1)) + 'k' }}</td>
+
+                </tr>
+            </tbody>
         </table>
     </div>
     {% endfor %}

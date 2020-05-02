@@ -41,28 +41,23 @@
          body {
          background: url(/static/img/bg.jpg);
          }
+         .index{
+         position: absolute;
+         top: 100px;
+         left: 30%;
+         width: 768px;
+         bottom: 100px;
+         background: rgb(149, 215, 234, 0.9);
+         padding-top: 100px;
+         padding: 200px;
+         }
          .text {
          color: white;
          position: absolute;
          top: 100px;
          left:40%;
          }
-         .text1 {
-         color: white;
-         position: absolute;
-         left:45%;
-         }
-         .search_hero {
-         position: absolute;
-         top: 100px;
-         left: 40%;
-         }
-         .title {
-         position: absolute;
-         top: 100px;
-         left: 40%;
-         }
-         .container{
+         .login{
          position: absolute;
          top: 100px;
          left: 30%;
@@ -85,8 +80,7 @@
             <div class="log"><a class="navbar-brand" href="/logout">{{ current_user.name }}</a></div>
         {% else %}
         <div class="nav-bar">
-            <a href="/heroes" class="button-link">Герои</a>
-            <a href="/items" class="button-link">Предметы</a>
+            <a href="/heroes" class="button-link">Чемпионы</a>
         </div>
         <form>
             <div class="log">
