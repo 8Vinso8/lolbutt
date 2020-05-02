@@ -46,7 +46,7 @@ def index():
                 return redirect(f'/summoner/{summoner_name}')
         except:
             return render_template(
-                "index.html",
+                "summoner.html",
                 right_name=False
             )
 
@@ -136,11 +136,20 @@ def search(summoner_name):
 @app.route("/matches", methods=['GET', 'POST'])
 def matches():
     if request.method == 'GET':
-        return render_template('matches.html')
+        return render_template(
+            'matches.html',
+            right_id=True
+        )
     elif request.method == 'POST':
         match_id = request.form.get('match_id')
-        return redirect(f'match/{match_id}')
-
+        try:
+            if cass.get_match(id=int(match_id)):
+                return redirect(f'match/{match_id}')
+        except:
+            return render_template(
+                'matches.html',
+                right_id=False
+            )
 
 @app.route('/match/<match_id>')
 def get_match(match_id):
