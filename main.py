@@ -16,7 +16,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
-cass.set_riot_api_key("RGAPI-4ebb526b-2f70-46c7-8212-a490b83645fe")
+cass.set_riot_api_key("RGAPI-fa29e3ff-89fe-40fa-bb6e-61d8d4462604")
 cass.set_default_region("RU")
 
 
@@ -64,15 +64,15 @@ def register():
         password = form.password.data
         session = db_session.create_session()
         if session.query(User).filter(User.email == email).first() or \
-           session.query(ConfirmUser).filter(ConfirmUser.email == email).first():
+                session.query(ConfirmUser).filter(ConfirmUser.email == email).first():
             return render_template('register.html',
                                    form=form,
                                    message="Адрес почты занят!")
         if session.query(User).filter(User.name == username).first() or \
-           session.query(User).filter(User.name == username).first():
+                session.query(User).filter(User.name == username).first():
             return render_template('register.html',
-                                    form=form,
-                                    message="Логин занят!")
+                                   form=form,
+                                   message="Логин занят!")
         token = str(uuid4())
         user = ConfirmUser(name=username, email=email, token=token)
         user.set_password(password)
@@ -104,25 +104,17 @@ def send_email(email, text):
 
 @app.route('/search/<summoner_name>')
 def search(summoner_name):
-    try:
-        summoner = cass.get_summoner(name=summoner_name)
-        name = summoner.name
-        level = summoner.level
-        good_with = summoner.champion_masteries.filter(lambda cm: cm.level > 6)
-        last_match = summoner.match_history[0]
-        last_champion = last_match.participants[summoner].champion
-        profile_icon = summoner.profile_icon.url
-        return render_template(
-            'search.html',
-            name=name,
-            level=level,
-            champions=[cm.champion.name for cm in good_with],
-            last_champion=last_champion.name,
-            profile_icon_url=profile_icon,
-            last_match_id=str(last_match.id)
-        )
-    except:
-         return redirect('/index')
+    summoner = cass.get_summoner(name=summoner_name)
+    good_with = summoner.champion_masteries.filter(lambda cm: cm.level > 6)
+    return render_template(
+        'search.html',
+        summoner=summoner,
+        name=summoner.name,
+        level=summoner.level,
+        champions=[cm.champion.name for cm in good_with],
+        profile_icon_url=summoner.profile_icon.url,
+        match_history=summoner.match_history
+    )
 
 
 @app.route('/match/<match_id>')
@@ -130,11 +122,42 @@ def get_match(match_id):
     match = cass.get_match(id=int(match_id))
     red_team = match.red_team
     blue_team = match.blue_team
+    red_team_stats = [sum(map(lambda participant: participant.stats.kills, red_team.participants)),
+                      sum(map(lambda participant: participant.stats.deaths, red_team.participants)),
+                      sum(map(lambda participant: participant.stats.assists, red_team.participants)),
+                      sum(map(lambda participant: participant.stats.gold_spent, red_team.participants)),
+                      sum(map(lambda participant: participant.stats.total_minions_killed, red_team.participants)),
+                      sum(map(lambda participant: participant.stats.gold_spent // match.duration.seconds * 60,
+                              red_team.participants)),
+                      sum(map(lambda participant: participant.stats.total_damage_dealt, red_team.participants)),
+                      sum(map(lambda participant: participant.stats.total_heal, red_team.participants)),
+                      sum(map(lambda participant: participant.stats.damage_dealt_to_turrets, red_team.participants))
+                      ]
+    blue_team_stats = [sum(map(lambda participant: participant.stats.kills, blue_team.participants)),
+                       sum(map(lambda participant: participant.stats.deaths, blue_team.participants)),
+                       sum(map(lambda participant: participant.stats.assists, blue_team.participants)),
+                       sum(map(lambda participant: participant.stats.gold_spent, blue_team.participants)),
+                       sum(map(lambda participant: participant.stats.total_minions_killed, blue_team.participants)),
+                       sum(map(lambda participant: participant.stats.gold_spent // match.duration.seconds * 60,
+                               blue_team.participants)),
+                       sum(map(lambda participant: participant.stats.total_damage_dealt, blue_team.participants)),
+                       sum(map(lambda participant: participant.stats.total_heal, blue_team.participants)),
+                       sum(map(lambda participant: participant.stats.damage_dealt_to_turrets, blue_team.participants))
+                       ]
+
     duration = match.duration
     return render_template(
         'match.html',
-        red_team={'name': 'Красная команда', 'participants': red_team.participants},
-        blue_team={'name': 'Синяя команда', 'participants': blue_team.participants},
+        red_team={
+            'name': 'Красная команда',
+            'participants': red_team.participants,
+            'stats': red_team_stats
+        },
+        blue_team={
+            'name': 'Синяя команда',
+            'participants': blue_team.participants,
+            'stats': blue_team_stats
+        },
         match_duration=duration,
         str=str,
         round=round,
@@ -166,7 +189,7 @@ def hero_search(hero):
     if hero in cass.Champions():
         hero = cass.get_champion(hero)
         name = hero.name
-        img = hero.image.url
+        img = hero.image.full
         win_rates = round(hero.win_rates['MIDDLE'] * 100, 2)
         ban_rates = round(hero.ban_rates["MIDDLE"] * 100, 2)
         return render_template(
@@ -175,7 +198,7 @@ def hero_search(hero):
             img=img,
             win_rates=win_rates,
             ban_rates=ban_rates
-            )
+        )
 
 
 @app.route('/activation/<token>')

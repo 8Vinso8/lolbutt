@@ -4,13 +4,30 @@
     .profile {
         border-radius: 70px;
     }
+    .champ_icon {
+        border-radius: 30px;
+    }
+    .search {
+         position: absolute;
+         top: 100px;
+         left: 30%;
+         width: 768px;
+         background: rgb(149, 215, 234, 0.9);
+         margin: auto;
+    }
+    .win {
+        color: blue;
+    }
+    .lose {
+        color: red;
+    }
 </style>
 {% endblock %}
 {% block content %}
 <div class="search">
-    <h2>
+    <h1>
        {{ name }} <img class="profile" src={{ profile_icon_url }} alt="No image" height="70" width="70">
-    </h2>
+    </h1>
     <h3>
     {% if champions %}
     <p>
@@ -27,6 +44,30 @@
     </p>
     {% endif %}
     </h3>
-    <a href="/match/{{ last_match_id }}"> Последний матч </a>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Чемпион</th>
+                <th scope="col">Результат</th>
+                <th scope="col">Длительность</th>
+                <th scope="col">KDA</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for match in match_history[:10] %}
+            <tr>
+                <td><a href="/heroes/{{ match.participants[summoner].champion.name }}"><img class="champ_icon" src={{match.participants[summoner].champion.image.url}} alt="No image" height="30" width="30"></a> <a href="/match/{{ match.id }}">{{ match.participants[summoner].champion.name }}</a></td>
+                {% if match.participants[summoner].team.win %}
+                <td><a class='win' href="/match/{{ match.id }}">Победа</a></td>
+                {% else %}
+                <td><a class='lose' href="/match/{{ match.id }}">Поражение</a></td>
+                {% endif %}
+                <th scope="row">{{ match.duration }}</th>
+                <th scope="row">{{ match.participants[summoner].stats.kills }}/{{ match.participants[summoner].stats.deaths }}/{{ match.participants[summoner].stats.assists }}</th>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

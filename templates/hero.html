@@ -1,8 +1,25 @@
 {% extends "base.html" %}
+{% block head %}
+<style type="text/css">
+    .profile {
+        border-radius: 70px;
+    }
+    .hero{
+         position: absolute;
+         top: 100px;
+         left: 30%;
+         width: 768px;
+         bottom: 100px;
+         background: rgb(149, 215, 234, 0.9);
+         padding-top: 0px;
+         padding: 300px;
+    }
+</style>
+{% endblock %}
 {% block content %}
 <div class="hero">
     <h2>Чемпион {{name}}</h2>
-<img src={{img}}>
+<img class="profile" src={{img}}>
 <h3>Винрейт {{win_rates}}%</h3>
 <h3>Банрейт {{ban_rates}}%</h3>
 </div>
