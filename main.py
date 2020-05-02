@@ -81,7 +81,8 @@ def register():
     if form.validate_on_submit():
         username = form.username.data
         try:
-            cass.get_summoner(name=username)
+            summoner = cass.get_summoner(name=username)
+            print(summoner.match_history[0].participants[summoner])
         except:
             return render_template('register.html',
                                    form=form,
