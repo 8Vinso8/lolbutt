@@ -37,29 +37,29 @@ def load_user(user_id):
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
+    title = 'LolButt'
     if request.method == 'GET':
         return render_template(
             'index.html',
-            right_name=True
+            title=title
         )
     elif request.method == 'POST':
         summoner_name = request.form.get('summoner_name')
         summoner = cass.get_summoner(name=summoner_name)
         try:
-            print(1)
             if summoner.match_history[0].participants[summoner]:
-                print(2)
                 return redirect(f'/summoner/{summoner_name}')
         except:
-            print(3)
             return render_template(
                 "index.html",
-                right_name=False
+                message="Неправильное имя призывателя!",
+                title=title
             )
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    title = 'Авторизация'
     form = LoginForm()
     if form.validate_on_submit():
         session = db_session.create_session()
@@ -69,15 +69,24 @@ def login():
             return redirect("/")
         return render_template('login.html',
                                message="Неправильный логин или пароль",
-                               form=form)
-    return render_template('login.html', title='Авторизация', form=form)
+                               form=form,
+                               title=title)
+    return render_template('login.html', title=title, form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    title='Регистрация'
     form = RegistrationForm()
     if form.validate_on_submit():
         username = form.username.data
+        try:
+            cass.get_summoner(name=username)
+        except:
+            return render_template('register.html',
+                                   form=form,
+                                   message="Такого призывателя не существует!",
+                                   title=title)
         email = form.email.data
         password = form.password.data
         session = db_session.create_session()
@@ -85,12 +94,15 @@ def register():
                 session.query(ConfirmUser).filter(ConfirmUser.email == email).first():
             return render_template('register.html',
                                    form=form,
-                                   message="Адрес почты занят!")
+                                   message="Адрес почты занят!",
+                                   title=title)
         if session.query(User).filter(User.name == username).first() or \
                 session.query(User).filter(User.name == username).first():
             return render_template('register.html',
                                    form=form,
-                                   message="Логин занят!")
+                                   message="Логин занят!",
+                                   title=title
+                                   )
         token = str(uuid4())
         user = ConfirmUser(name=username, email=email, token=token)
         user.set_password(password)
@@ -106,8 +118,8 @@ def register():
             session.close()
             return redirect('/register')
         session.close()
-        return redirect('/login')
-    return render_template('register.html', form=form)
+        return render_template('final_register.html', title='Последний штрих')
+    return render_template('register.html', form=form, title=title)
 
 
 def send_email(email, text):
@@ -144,8 +156,7 @@ def search(summoner_name):
 def matches():
     if request.method == 'GET':
         return render_template(
-            'matches.html',
-            right_id=True
+            'matches.html'
         )
     elif request.method == 'POST':
         match_id = request.form.get('match_id')
@@ -155,7 +166,7 @@ def matches():
         except:
             return render_template(
                 'matches.html',
-                right_id=False
+                message="Неверный id матча!"
             )
 
 
@@ -237,7 +248,7 @@ def heroes():
         except NameError:
             return render_template(
                 'heroes.html',
-                right_name=False
+                message='Неправильное имя чемпиона!'
             )
 
 
@@ -284,11 +295,12 @@ def activate(token):
     session.add(user)
     session.delete(confirm_user)
     session.commit()
+    session.close()
     return redirect('/login')
 
 
 if __name__ == '__main__':
     db_session.global_init("db/data.sqlite")
-    app.run(host='localhost', port=8080) # ДЛЯ ДУРАЧКОВ РАЗРАБОВ
+    #app.run(host='localhost', port=8080) # ДЛЯ ДУРАЧКОВ РАЗРАБОВ
     port = int(os.environ.get("PORT", 5000))
-    # app.run(host='0.0.0.0', port=port)  # СЕРВЕР
+    app.run(host='0.0.0.0', port=port)  # СЕРВЕР

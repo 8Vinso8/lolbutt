@@ -18,11 +18,11 @@
         <img src="/static/img/matches_logo.png" width="768" height="545">
         <input type="text" placeholder="id матча" required name="hero">
         <input type="submit" value="♂">
+        {% if message %}
+        <div class="alert alert-danger" role="alert">
+          {{ message }}
+        </div>
+        {% endif %}
    </form>
-    {% if not right_id%}
-            <div class="alert alert-danger" role="alert">
-               Вы написали неверный id матча
-            </div>
-    {% endif %}
 </div>
 {% endblock %}

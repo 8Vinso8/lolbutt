@@ -19,9 +19,9 @@
         <input type="text" placeholder="Имя призывателя" required name="summoner_name">
         <input type="submit" value="♂">
     </form>
-    {% if not right_name%}
+    {% if message %}
         <div class="alert alert-danger" role="alert">
-          Такого призывателя не существует
+          {{ message }}
         </div>
     {% endif %}
 </div>
