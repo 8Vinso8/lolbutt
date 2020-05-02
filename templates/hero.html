@@ -11,16 +11,27 @@
          width: 768px;
          bottom: 100px;
          background: rgb(149, 215, 234, 0.9);
-         padding-top: 0px;
-         padding: 300px;
+         margin: auto;
     }
 </style>
 {% endblock %}
 {% block content %}
 <div class="hero">
-    <h2>Чемпион {{name}}</h2>
-<img class="profile" src={{img}}>
-<h3>Винрейт {{win_rates}}%</h3>
-<h3>Банрейт {{ban_rates}}%</h3>
+    <h1>  {{name}}  <img class="profile" src={{img}}></h1>
+    {% for lane in lanes %}
+        <h3>
+        {% if lane == 'MIDDLE' %}
+            <img width="100" height="100" src="/static/img/middle.png">
+        {% elif lane == 'BOTTOM' %}
+            <img width="100" height="100" src="/static/img/bottom.png">
+        {% elif lane == 'UTILITY' %}
+            <img width="100" height="100" src="/static/img/utility.png">
+        {% elif lane == 'TOP' %}
+            <img width="100" height="100" src="/static/img/top.png">
+        {% elif lane == 'JUNGLE' %}
+            <img width="100" height="100" src="/static/img/jungle.png">
+        {% endif %}
+            Винрейт: {{win_rates[lane]}}% Пикрейт: {{play_rates[lane]}}% Банрейт: {{ban_rates[lane]}}%</h3>
+    {% endfor %}
 </div>
 {% endblock %}

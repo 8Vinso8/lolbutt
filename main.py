@@ -27,10 +27,6 @@ def load_user(user_id):
 
 
 @app.route('/')
-def base():
-    return render_template('base.html')
-
-
 @app.route('/index', methods=['POST', 'GET'])
 def index():
     if request.method == 'GET':
@@ -117,6 +113,15 @@ def search(summoner_name):
     )
 
 
+@app.route("/matches", methods=['GET', 'POST'])
+def matches():
+    if request.method == 'GET':
+        return render_template('matches.html')
+    elif request.method == 'POST':
+        match_id = request.form.get('match_id')
+        return redirect(f'match/{match_id}')
+
+
 @app.route('/match/<match_id>')
 def get_match(match_id):
     match = cass.get_match(id=int(match_id))
@@ -183,7 +188,7 @@ def heroes():
         return render_template('heroes.html')
     elif request.method == 'POST':
         hero = request.form.get('hero')
-        return redirect(f'/{hero}')
+        return redirect(f'/{hero[0].upper() + hero[1:].lower()}')
 
 
 @app.route("/<hero>")
@@ -192,14 +197,24 @@ def hero_search(hero):
         hero = cass.get_champion(hero)
         name = hero.name
         img = hero.image.url
-        win_rates = round(hero.win_rates['MIDDLE'] * 100, 2)
-        ban_rates = round(hero.ban_rates["MIDDLE"] * 100, 2)
+        win_rates = dict()
+        ban_rates = dict()
+        play_rates = dict()
+        for lane, rate in hero.win_rates.items():
+            win_rates[lane] = round(rate * 100, 2)
+        for lane, rate in hero.ban_rates.items():
+            ban_rates[lane] = round(rate * 100, 2)
+        for lane, rate in hero.play_rates.items():
+            play_rates[lane] = round(rate * 100, 2)
+        lanes = map(lambda z: z[0], sorted(play_rates.items(), key=lambda x: x[1], reverse=True))
         return render_template(
             'hero.html',
             name=name,
             img=img,
             win_rates=win_rates,
-            ban_rates=ban_rates
+            ban_rates=ban_rates,
+            play_rates=play_rates,
+            lanes=lanes
         )
 
 

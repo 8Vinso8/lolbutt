@@ -1,10 +1,23 @@
 {% extends "base.html" %}
+{% block head %}
+<style>
+.index{
+         position: absolute;
+         top: 100px;
+         left: 30%;
+         width: 768px;
+         bottom: 100px;
+         background: rgb(149, 215, 234, 0.9);
+         margin: auto;
+         }
+</style>
+{% endblock %}
 {% block content %}
-<div class="index">
-    Найти призывателя:
-<form method="post">
-    <input type="text" required name="summoner_name">
-    <input type="submit">
-</form>
+<div class="index" align="center">
+    <form method="post">
+        <img src="/static/img/main_logo.png" width="768" height="545">
+        <input type="text" placeholder="Имя призывателя" required name="summoner_name">
+        <input type="submit" value="♂">
+    </form>
 </div>
 {% endblock %}
