@@ -122,28 +122,30 @@ def get_match(match_id):
     match = cass.get_match(id=int(match_id))
     red_team = match.red_team
     blue_team = match.blue_team
-    red_team_stats = [sum(map(lambda participant: participant.stats.kills, red_team.participants)),
-                      sum(map(lambda participant: participant.stats.deaths, red_team.participants)),
-                      sum(map(lambda participant: participant.stats.assists, red_team.participants)),
-                      sum(map(lambda participant: participant.stats.gold_spent, red_team.participants)),
-                      sum(map(lambda participant: participant.stats.total_minions_killed, red_team.participants)),
-                      sum(map(lambda participant: participant.stats.gold_spent // match.duration.seconds * 60,
-                              red_team.participants)),
-                      sum(map(lambda participant: participant.stats.total_damage_dealt, red_team.participants)),
-                      sum(map(lambda participant: participant.stats.total_heal, red_team.participants)),
-                      sum(map(lambda participant: participant.stats.damage_dealt_to_turrets, red_team.participants))
-                      ]
-    blue_team_stats = [sum(map(lambda participant: participant.stats.kills, blue_team.participants)),
-                       sum(map(lambda participant: participant.stats.deaths, blue_team.participants)),
-                       sum(map(lambda participant: participant.stats.assists, blue_team.participants)),
-                       sum(map(lambda participant: participant.stats.gold_spent, blue_team.participants)),
-                       sum(map(lambda participant: participant.stats.total_minions_killed, blue_team.participants)),
-                       sum(map(lambda participant: participant.stats.gold_spent // match.duration.seconds * 60,
-                               blue_team.participants)),
-                       sum(map(lambda participant: participant.stats.total_damage_dealt, blue_team.participants)),
-                       sum(map(lambda participant: participant.stats.total_heal, blue_team.participants)),
-                       sum(map(lambda participant: participant.stats.damage_dealt_to_turrets, blue_team.participants))
-                       ]
+    red_team_stats = [
+        sum(map(lambda participant: participant.stats.kills, red_team.participants)),
+        sum(map(lambda participant: participant.stats.deaths, red_team.participants)),
+        sum(map(lambda participant: participant.stats.assists, red_team.participants)),
+        sum(map(lambda participant: participant.stats.gold_spent, red_team.participants)),
+        sum(map(lambda participant: participant.stats.total_minions_killed, red_team.participants)),
+        sum(map(lambda participant: participant.stats.gold_spent // match.duration.seconds * 60,
+                red_team.participants)),
+        sum(map(lambda participant: participant.stats.total_damage_dealt, red_team.participants)),
+        sum(map(lambda participant: participant.stats.total_heal, red_team.participants)),
+        sum(map(lambda participant: participant.stats.damage_dealt_to_turrets, red_team.participants))
+    ]
+    blue_team_stats = [
+        sum(map(lambda participant: participant.stats.kills, blue_team.participants)),
+        sum(map(lambda participant: participant.stats.deaths, blue_team.participants)),
+        sum(map(lambda participant: participant.stats.assists, blue_team.participants)),
+        sum(map(lambda participant: participant.stats.gold_spent, blue_team.participants)),
+        sum(map(lambda participant: participant.stats.total_minions_killed, blue_team.participants)),
+        sum(map(lambda participant: participant.stats.gold_spent // match.duration.seconds * 60,
+                blue_team.participants)),
+        sum(map(lambda participant: participant.stats.total_damage_dealt, blue_team.participants)),
+        sum(map(lambda participant: participant.stats.total_heal, blue_team.participants)),
+        sum(map(lambda participant: participant.stats.damage_dealt_to_turrets, blue_team.participants))
+    ]
 
     duration = match.duration
     return render_template(
@@ -189,7 +191,7 @@ def hero_search(hero):
     if hero in cass.Champions():
         hero = cass.get_champion(hero)
         name = hero.name
-        img = hero.image.full
+        img = hero.image.url
         win_rates = round(hero.win_rates['MIDDLE'] * 100, 2)
         ban_rates = round(hero.ban_rates["MIDDLE"] * 100, 2)
         return render_template(
