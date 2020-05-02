@@ -18,6 +18,11 @@
         <img src="/static/img/champions_screen.jpg" width="768" height="545">
         <input type="text" placeholder="Имя чемпиона" required name="hero">
         <input type="submit" value="♂">
+         {% if not right_name%}
+            <div class="alert alert-danger" role="alert">
+               Вы написали неверное имя чемпиона.
+            </div>
+         {% endif %}
    </form>
 </div>
 {% endblock %}
