@@ -24,6 +24,11 @@ class NameError(Exception):
     pass
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html')
+
+
 @login_manager.user_loader
 def load_user(user_id):
     session = db_session.create_session()
@@ -284,6 +289,6 @@ def activate(token):
 
 if __name__ == '__main__':
     db_session.global_init("db/data.sqlite")
-    # app.run(host='localhost', port=8080) # ДЛЯ ДУРАЧКОВ РАЗРАБОВ
+    app.run(host='localhost', port=8080) # ДЛЯ ДУРАЧКОВ РАЗРАБОВ
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)  # СЕРВЕР
+    # app.run(host='0.0.0.0', port=port)  # СЕРВЕР
