@@ -16,7 +16,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
-cass.set_riot_api_key("RGAPI-fa29e3ff-89fe-40fa-bb6e-61d8d4462604")
+cass.set_riot_api_key("RGAPI-547982ff-5c41-4681-8ea1-a86bf0a24600")
 cass.set_default_region("RU")
 
 
